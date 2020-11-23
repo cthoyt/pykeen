@@ -456,7 +456,7 @@ def estimate_cost_of_sequence(
                 itertools.accumulate(
                     other_shapes,
                     calculate_broadcasted_elementwise_result_shape,
-                    shape,
+                    initial=shape,
                 ),
                 1,
                 None,
