@@ -510,7 +510,7 @@ def get_optimal_sequence(*shapes: Tuple[int, ...]) -> Tuple[int, Tuple[int, ...]
 def _multi_combine(
     tensors: Tuple[torch.FloatTensor, ...],
     op: Callable[[torch.FloatTensor, torch.FloatTensor], torch.FloatTensor],
-    initial: Union[torch.FloatTensor, typing.SupportsFloat],
+    initial: Union[None, torch.FloatTensor, typing.SupportsFloat] = None,
 ) -> torch.FloatTensor:
     """Broadcasted element-wise combination of tensors.
 
@@ -528,6 +528,9 @@ def _multi_combine(
     """
     # determine optimal processing order
     order = get_optimal_sequence(*(t.shape for t in tensors))[1]
+    if initial is None:
+        initial = tensors[order[0]]
+        order = order[1:]
     return functools.reduce(op, [tensors[i] for i in order], initial)
 
 
@@ -542,4 +545,4 @@ def tensor_sum(*tensors: torch.FloatTensor) -> torch.FloatTensor:
     :return:
         sum(*tensors) evaluated in an optimal processing order.
     """
-    return _multi_combine(tensors=tensors, op=operator.add, initial=0)
+    return _multi_combine(tensors=tensors, op=operator.add)
