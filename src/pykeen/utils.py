@@ -430,3 +430,9 @@ def random_non_negative_int() -> int:
     """Generate a random positive integer."""
     sq = np.random.SeedSequence(np.random.randint(0, np.iinfo(np.int_).max))
     return int(sq.generate_state(1)[0])
+
+
+def tensor_sum(*x: torch.FloatTensor) -> torch.FloatTensor:
+    """Compute sum of tensors in brodcastable shape."""
+    # TODO: Optimize order
+    return sum(x)
